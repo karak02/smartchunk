@@ -57,8 +57,7 @@ class ChromaExporter(BaseExporter):
             import chromadb  # type: ignore[import-untyped]
         except ImportError as exc:
             raise ImportError(
-                "ChromaDB export requires chromadb. "
-                "Install with: pip install smartchunk[chromadb]"
+                "ChromaDB export requires chromadb. Install with: pip install smartchunk[chromadb]"
             ) from exc
 
         collection_name = collection_name or self.collection_name
@@ -83,7 +82,9 @@ class ChromaExporter(BaseExporter):
                 {
                     "raw_text": chunk.text,
                     "summary": chunk.summary,
-                    "entities": ", ".join(chunk.entities),  # ChromaDB metadata must be str/int/float
+                    "entities": ", ".join(
+                        chunk.entities
+                    ),  # ChromaDB metadata must be str/int/float
                     "keywords": ", ".join(chunk.keywords),
                     "parent_context": chunk.parent_context,
                     "prev_summary": chunk.prev_summary,

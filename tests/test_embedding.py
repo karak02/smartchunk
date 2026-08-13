@@ -9,7 +9,9 @@ def test_contextual_embedding_builder():
         text="The board approved $50M expansion.",
         summary="Board approves capital expenditure.",
         parent_context="Financial Strategy → Capital Allocation",
-        metadata=ChunkMetadata(source="annual_report.pdf", chunk_index=0, total_chunks=1, char_count=35, token_count=7),
+        metadata=ChunkMetadata(
+            source="annual_report.pdf", chunk_index=0, total_chunks=1, char_count=35, token_count=7
+        ),
     )
 
     builder = ContextualEmbeddingBuilder()

@@ -1,4 +1,5 @@
-"""HTML parser — extracts structured text, heading hierarchies, tables, and image references from HTML files.
+"""HTML parser — extracts structured text, heading hierarchies, tables,
+and image references from HTML files.
 
 Requires the ``html`` extra::
 

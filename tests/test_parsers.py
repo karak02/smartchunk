@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -132,9 +131,10 @@ class TestGetParser:
 
     def test_csv_parser(self, tmp_path: Path):
         from smartchunk.parsers.csv_parser import CsvParser
+
         csv_file = tmp_path / "test.csv"
         csv_file.write_text("Name,Age,Role\nAlice,30,Engineer\nBob,25,Designer\n", encoding="utf-8")
-        
+
         parser = CsvParser()
         sections = parser.parse(csv_file)
         assert len(sections) == 1
@@ -145,9 +145,10 @@ class TestGetParser:
 
     def test_json_parser(self, tmp_path: Path):
         from smartchunk.parsers.json_parser import JsonParser
+
         json_file = tmp_path / "test.json"
         json_file.write_text('{"project": "SmartChunk", "version": 1.0}', encoding="utf-8")
-        
+
         parser = JsonParser()
         sections = parser.parse(json_file)
         assert len(sections) == 1
@@ -156,9 +157,10 @@ class TestGetParser:
 
     def test_xml_parser(self, tmp_path: Path):
         from smartchunk.parsers.xml_parser import XmlParser
+
         xml_file = tmp_path / "test.xml"
         xml_file.write_text("<root><child>Hello World</child></root>", encoding="utf-8")
-        
+
         parser = XmlParser()
         sections = parser.parse(xml_file)
         assert len(sections) == 1
@@ -166,6 +168,7 @@ class TestGetParser:
 
     def test_pdf_multimodal_extraction(self, tmp_path: Path):
         from unittest.mock import MagicMock, patch
+
         from smartchunk.parsers.pdf import PdfParser
 
         pdf_file = tmp_path / "dummy.pdf"
@@ -173,8 +176,11 @@ class TestGetParser:
 
         mock_pages = [
             {
-                "text": "Some preamble text.\n\n| Column A | Column B |\n| --- | --- |\n| Value 1 | Value 2 |\n\nSome postamble text.",
-                "metadata": {"page": 0}
+                "text": (
+                    "Some preamble text.\n\n| Column A | Column B |\n| --- | --- |\n"
+                    "| Value 1 | Value 2 |\n\nSome postamble text."
+                ),
+                "metadata": {"page": 0},
             }
         ]
 
@@ -182,13 +188,13 @@ class TestGetParser:
         mock_page = MagicMock()
         # mock block: (x0, y0, x1, y1, text, block_no, block_type)
         # block_type=1 is image block
-        mock_page.get_text.return_value = [
-            (50.0, 100.0, 200.0, 250.0, "", 0, 1)
-        ]
+        mock_page.get_text.return_value = [(50.0, 100.0, 200.0, 250.0, "", 0, 1)]
         mock_doc.__getitem__.return_value = mock_page
 
-        with patch("pymupdf4llm.to_markdown", return_value=mock_pages), \
-             patch("fitz.open", return_value=mock_doc):
+        with (
+            patch("pymupdf4llm.to_markdown", return_value=mock_pages),
+            patch("fitz.open", return_value=mock_doc),
+        ):
             parser = PdfParser()
             sections = parser.parse(pdf_file)
 
@@ -210,4 +216,3 @@ class TestGetParser:
             fig = sections[0].figures[0]
             assert fig.page == 1
             assert list(fig.bbox) == [50.0, 100.0, 200.0, 250.0]
-

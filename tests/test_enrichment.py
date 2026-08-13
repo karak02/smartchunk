@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from smartchunk.enrichment.llm import LLMEnricher
-from smartchunk.enrichment.prompts import build_enrichment_prompt, SYSTEM_PROMPT
+from smartchunk.enrichment.prompts import SYSTEM_PROMPT, build_enrichment_prompt
 from smartchunk.models import (
     ChunkMetadata,
     EnrichmentConfig,
@@ -97,7 +97,9 @@ class TestLLMEnricher:
     def test_neighbor_linking(self, mock_acompletion: AsyncMock):
         """Test that prev_summary and next_summary are linked correctly."""
         responses = [
-            _mock_llm_response({"summary": f"Summary {i}", "entities": [], "keywords": [], "confidence": 0.9})
+            _mock_llm_response(
+                {"summary": f"Summary {i}", "entities": [], "keywords": [], "confidence": 0.9}
+            )
             for i in range(3)
         ]
         mock_acompletion.side_effect = responses
@@ -142,7 +144,12 @@ class TestLLMEnricher:
     def test_selective_enrichment(self, mock_acompletion: AsyncMock):
         """Test that only selected enrichment fields are populated."""
         mock_acompletion.return_value = _mock_llm_response(
-            {"summary": "Test summary", "entities": ["Entity1"], "keywords": ["key1"], "confidence": 0.8}
+            {
+                "summary": "Test summary",
+                "entities": ["Entity1"],
+                "keywords": ["key1"],
+                "confidence": 0.8,
+            }
         )
 
         # Only enrich summary and keywords
@@ -205,10 +212,10 @@ class TestLLMEnricher:
         # Asserts
         assert result[0].summary == "Duplicate summary content"
         assert result[1].summary == "Duplicate summary content"
-        
+
         # Verify LLM was only called once
         assert mock_acompletion.call_count == 1
-        
+
         # Verify cache stats
         c_stats = enricher.cache_stats
         assert c_stats["cache_hits"] == 1
@@ -226,13 +233,12 @@ class TestLLMEnricher:
                 "summary": "Injected summary",
                 "entities": ["E1"],
                 "keywords": ["K1"],
-                "confidence": 0.95
+                "confidence": 0.95,
             }
         }
         enricher.inject_cache(dummy_cache)
-        
+
         # Export and verify content
         exported = enricher.export_cache()
         assert exported == dummy_cache
         assert enricher.cache_stats["cache_entries"] == 1
-

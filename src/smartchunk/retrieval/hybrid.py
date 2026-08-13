@@ -1,10 +1,10 @@
-"""Hybrid retriever — combines dense vector retrieval, BM25 lexical search, metadata filtering, parent-child expansion, and neighbor graph walking.
-"""
+"""Hybrid retriever — combines dense vector retrieval, BM25 lexical search,
+metadata filtering, parent-child expansion, and neighbor graph walking."""
 
 from __future__ import annotations
 
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 from smartchunk.models import RetrievalConfig, ScoredChunk, SmartChunk
 from smartchunk.retrieval.bm25 import BM25Index
@@ -64,8 +64,12 @@ class HybridRetriever:
         if not self.chunks or not query.strip():
             return []
 
-        should_expand_parents = expand_parents if expand_parents is not None else self.config.expand_parents
-        num_expand_neighbors = expand_neighbors if expand_neighbors is not None else self.config.expand_neighbors
+        should_expand_parents = (
+            expand_parents if expand_parents is not None else self.config.expand_parents
+        )
+        num_expand_neighbors = (
+            expand_neighbors if expand_neighbors is not None else self.config.expand_neighbors
+        )
 
         # 1. Lexical BM25 Candidates
         bm25_candidates = self.bm25_index.search(query, top_k=top_k * 3)
@@ -119,7 +123,10 @@ class HybridRetriever:
 
             scores: list[float] = []
             for emb in doc_embeddings:
-                sim = float(np.dot(query_embedding, emb) / (np.linalg.norm(query_embedding) * np.linalg.norm(emb) + 1e-10))
+                sim = float(
+                    np.dot(query_embedding, emb)
+                    / (np.linalg.norm(query_embedding) * np.linalg.norm(emb) + 1e-10)
+                )
                 scores.append(max(0.0, sim))
 
             results: list[ScoredChunk] = []

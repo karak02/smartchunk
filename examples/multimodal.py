@@ -1,4 +1,4 @@
-﻿"""SmartChunk Multimodal Example — process PDFs extracting text, tables, AND figures.
+"""SmartChunk Multimodal Example — process PDFs extracting text, tables, AND figures.
 
 Demonstrates the full multimodal pipeline:
     Document → Parser → [Text chunks | Table chunks | Figure chunks]
@@ -10,11 +10,12 @@ Usage:
     pip install smartchunk[pdf]
     python examples/multimodal.py path/to/your.pdf
 """
+
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from smartchunk import SmartChunker
@@ -62,7 +63,9 @@ def main(pdf_path: str, enrich: bool = False, model: str = "gpt-4o-mini") -> Non
         for c in figure_chunks:
             if c.figures:
                 fig = c.figures[0]
-                print(f"  Page {c.metadata.page} | bbox={fig.bbox} | caption={fig.caption or 'none'}")
+                print(
+                    f"  Page {c.metadata.page} | bbox={fig.bbox} | caption={fig.caption or 'none'}"
+                )
     else:
         print("No figures detected in this document.")
     print()
@@ -84,6 +87,7 @@ def main(pdf_path: str, enrich: bool = False, model: str = "gpt-4o-mini") -> Non
 
 if __name__ == "__main__":
     import argparse
+
     p = argparse.ArgumentParser()
     p.add_argument("pdf", help="Path to PDF file")
     p.add_argument("--enrich", action="store_true")

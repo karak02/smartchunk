@@ -1,10 +1,11 @@
-﻿"""SmartChunk Basic Example — process text and a plain text file.
+"""SmartChunk Basic Example — process text and a plain text file.
 
 Usage:
     python examples/basic.py
     python examples/basic.py --enrich --model gpt-4o-mini
     python examples/basic.py --enrich --model ollama/qwen2.5-coder:1.5b
 """
+
 from __future__ import annotations
 
 import sys
@@ -35,7 +36,9 @@ chunks = chunker.process_text(
 )
 for chunk in chunks:
     print(f"  [{chunk.id[:8]}] {chunk.text[:80].strip()}...")
-    print(f"           tokens={chunk.metadata.token_count}, context={chunk.parent_context or 'root'}")
+    print(
+        f"           tokens={chunk.metadata.token_count}, context={chunk.parent_context or 'root'}"
+    )
 print()
 
 # ── 2. With enrichment ────────────────────────────────────────────────────────

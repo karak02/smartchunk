@@ -80,10 +80,10 @@ class ChunkGraphBuilder:
                 sec_hash = hashlib.md5(context.encode("utf-8")).hexdigest()[:10]
                 sec_id = f"sec_{sec_hash}"
                 chunk.section_id = sec_id
-                
+
                 # Calculate depth from hierarchy length ("Section A → Sub B" -> depth 2)
                 chunk.depth = len([p for p in context.split("→") if p.strip()])
-                
+
                 section_map.setdefault(sec_id, []).append(chunk)
             else:
                 chunk.depth = 0
@@ -133,7 +133,8 @@ class ChunkGraphBuilder:
                 for target_id in chunk_ids:
                     if target_id != cid:
                         if not any(
-                            r.target_id == target_id and r.relation == RelationshipType.SHARED_ENTITY
+                            r.target_id == target_id
+                            and r.relation == RelationshipType.SHARED_ENTITY
                             for r in chunk.relationships
                         ):
                             chunk.relationships.append(

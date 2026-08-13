@@ -13,7 +13,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 from pathlib import Path
 
@@ -110,4 +109,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

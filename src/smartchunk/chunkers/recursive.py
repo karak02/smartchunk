@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import tiktoken
 
-from smartchunk.models import ChunkerConfig, DocumentSection
 from smartchunk.chunkers.base import BaseChunker
+from smartchunk.models import ChunkerConfig, DocumentSection
 
 # Separator hierarchy: try the most structural first, fall back to finer splits.
 _DEFAULT_SEPARATORS = ["\n\n", "\n", ". ", "! ", "? ", "; ", ", ", " "]

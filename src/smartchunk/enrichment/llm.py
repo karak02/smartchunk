@@ -13,7 +13,6 @@ import asyncio
 import hashlib
 import json
 import logging
-import time
 from typing import Any
 
 from litellm import acompletion  # type: ignore[import-untyped]
@@ -46,15 +45,23 @@ class LLMEnricher(BaseEnricher):
         # ── Cost Optimization: Hash-based enrichment cache ──
         # Key: SHA-256 hash of chunk text  →  Value: enrichment dict
         from pathlib import Path
-        self._cache_file = str(Path(__file__).parent.parent.parent.parent / ".smartchunk_cache.json")
+
+        self._cache_file = str(
+            Path(__file__).parent.parent.parent.parent / ".smartchunk_cache.json"
+        )
         self._cache: dict[str, dict[str, Any]] = {}
-        
+
         import os
+
         if os.path.exists(self._cache_file):
             try:
-                with open(self._cache_file, "r", encoding="utf-8") as f:
+                with open(self._cache_file, encoding="utf-8") as f:
                     self._cache = json.load(f)
-                logger.info("Loaded %d entries from persistent cache: %s", len(self._cache), self._cache_file)
+                logger.info(
+                    "Loaded %d entries from persistent cache: %s",
+                    len(self._cache),
+                    self._cache_file,
+                )
             except Exception as e:
                 logger.warning("Failed to load persistent cache from %s: %s", self._cache_file, e)
 
@@ -155,7 +162,9 @@ class LLMEnricher(BaseEnricher):
         try:
             with open(self._cache_file, "w", encoding="utf-8") as f:
                 json.dump(self._cache, f, indent=2)
-            logger.debug("Saved persistent cache with %d entries to %s", len(self._cache), self._cache_file)
+            logger.debug(
+                "Saved persistent cache with %d entries to %s", len(self._cache), self._cache_file
+            )
         except Exception as e:
             logger.warning("Failed to save persistent cache to %s: %s", self._cache_file, e)
 
@@ -243,7 +252,9 @@ class LLMEnricher(BaseEnricher):
                 )
                 await asyncio.sleep(wait)
 
-        logger.error("Failed to enrich chunk %s after %d attempts", chunk.id, self.config.max_retries)
+        logger.error(
+            "Failed to enrich chunk %s after %d attempts", chunk.id, self.config.max_retries
+        )
         return None
 
     # ── Parsing & Application ──────────────────────────────────────────────
@@ -251,7 +262,7 @@ class LLMEnricher(BaseEnricher):
     def _parse_response(self, content: str) -> dict[str, Any]:
         """Parse and validate the LLM JSON response."""
         content = content.strip()
-        
+
         # 1. Try direct parsing
         try:
             return json.loads(content)
@@ -260,6 +271,7 @@ class LLMEnricher(BaseEnricher):
 
         # 2. Try to strip markdown code blocks (e.g. ```json ... ``` or ``` ... ```)
         import re
+
         pattern = r"```(?:json)?\s*(.*?)\s*```"
         match = re.search(pattern, content, re.DOTALL)
         if match:
@@ -273,7 +285,7 @@ class LLMEnricher(BaseEnricher):
         first_brace = content.find("{")
         last_brace = content.rfind("}")
         if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
-            json_candidate = content[first_brace:last_brace + 1]
+            json_candidate = content[first_brace : last_brace + 1]
             try:
                 return json.loads(json_candidate)
             except json.JSONDecodeError:
@@ -296,9 +308,9 @@ class LLMEnricher(BaseEnricher):
 
         if EnrichmentField.ENTITIES in fields:
             entities_val = (
-                norm_data.get("entities") or 
-                norm_data.get("named_entities") or 
-                norm_data.get("named entities")
+                norm_data.get("entities")
+                or norm_data.get("named_entities")
+                or norm_data.get("named entities")
             )
             if entities_val is not None:
                 if isinstance(entities_val, list):

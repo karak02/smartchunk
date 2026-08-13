@@ -12,7 +12,6 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-
 # ── Enums ──────────────────────────────────────────────────────────────────────
 
 
@@ -59,7 +58,9 @@ class TableData(BaseModel):
     """Structured representation of a document table."""
 
     headers: list[str] = Field(default_factory=list, description="Column header titles.")
-    rows: list[list[str]] = Field(default_factory=list, description="2D matrix of cell text values.")
+    rows: list[list[str]] = Field(
+        default_factory=list, description="2D matrix of cell text values."
+    )
     caption: str = Field(default="", description="Table title or caption.")
 
     def to_markdown(self) -> str:
@@ -71,7 +72,11 @@ class TableData(BaseModel):
         if self.caption:
             lines.append(f"**Table: {self.caption}**\n")
 
-        headers = self.headers if self.headers else [f"Col {i+1}" for i in range(len(self.rows[0]) if self.rows else 0)]
+        headers = (
+            self.headers
+            if self.headers
+            else [f"Col {i + 1}" for i in range(len(self.rows[0]) if self.rows else 0)]
+        )
         lines.append("| " + " | ".join(headers) + " |")
         lines.append("| " + " | ".join(["---"] * len(headers)) + " |")
 
@@ -87,7 +92,9 @@ class TableData(BaseModel):
         if not self.rows:
             return self.caption
 
-        headers = self.headers if self.headers else [f"Field_{i+1}" for i in range(len(self.rows[0]))]
+        headers = (
+            self.headers if self.headers else [f"Field_{i + 1}" for i in range(len(self.rows[0]))]
+        )
         items: list[str] = []
 
         if self.caption:
@@ -120,9 +127,7 @@ class DocumentSection(BaseModel):
     """
 
     text: str = Field(..., description="Raw text content of this section.")
-    heading: str | None = Field(
-        default=None, description="Heading/title of this section, if any."
-    )
+    heading: str | None = Field(default=None, description="Heading/title of this section, if any.")
     level: int = Field(
         default=0,
         ge=0,
@@ -183,12 +188,24 @@ class SmartChunk(BaseModel):
     # ── Contextual Embedding ──
     contextual_text: str = Field(
         default="",
-        description="Pre-built contextual text for vector embeddings (document context + summary + raw text).",
+        description=(
+            "Pre-built contextual text for vector embeddings "
+            "(document context + summary + raw text)."
+        ),
     )
-    cache_status: str = Field(default="MISS", description="Enrichment cache status ('HIT', 'MISS', or 'DISABLED').")
-    strategy: str = Field(default="recursive", description="Chunking strategy used ('recursive', 'semantic', or 'structural').")
-    embedding_model: str = Field(default="all-MiniLM-L6-v2", description="Model used for dense embeddings.")
-    embedding_dimensions: int = Field(default=384, description="Dimensions of the dense embeddings.")
+    cache_status: str = Field(
+        default="MISS", description="Enrichment cache status ('HIT', 'MISS', or 'DISABLED')."
+    )
+    strategy: str = Field(
+        default="recursive",
+        description="Chunking strategy used ('recursive', 'semantic', or 'structural').",
+    )
+    embedding_model: str = Field(
+        default="all-MiniLM-L6-v2", description="Model used for dense embeddings."
+    )
+    embedding_dimensions: int = Field(
+        default=384, description="Dimensions of the dense embeddings."
+    )
 
     # ── Enrichment fields (populated by the enrichment pipeline) ──
     summary: str = Field(default="", description="One-sentence summary of the chunk.")
@@ -236,7 +253,9 @@ class SmartChunk(BaseModel):
     # ── Document Graph Navigation & Hierarchy ──
     prev_id: str | None = Field(default=None, description="ID of the preceding chunk.")
     next_id: str | None = Field(default=None, description="ID of the following chunk.")
-    parent_id: str | None = Field(default=None, description="ID of the parent chunk/section, if any.")
+    parent_id: str | None = Field(
+        default=None, description="ID of the parent chunk/section, if any."
+    )
     children_ids: list[str] = Field(
         default_factory=list,
         description="IDs of child chunks contained within this chunk/section.",
@@ -266,7 +285,9 @@ class ScoredChunk(BaseModel):
     score: float = Field(default=0.0, description="Final combined relevance score.")
     dense_score: float = Field(default=0.0, description="Dense vector similarity score.")
     bm25_score: float = Field(default=0.0, description="Lexical BM25 score.")
-    rerank_score: float | None = Field(default=None, description="Score assigned by reranker, if applied.")
+    rerank_score: float | None = Field(
+        default=None, description="Score assigned by reranker, if applied."
+    )
 
 
 # ── Configuration Models ───────────────────────────────────────────────────────
@@ -334,12 +355,24 @@ class EnrichmentConfig(BaseModel):
 class RetrievalConfig(BaseModel):
     """Configuration for hybrid retrieval and graph expansion."""
 
-    vector_weight: float = Field(default=0.7, ge=0.0, le=1.0, description="Weight for dense vector search.")
-    bm25_weight: float = Field(default=0.3, ge=0.0, le=1.0, description="Weight for BM25 keyword search.")
-    expand_parents: bool = Field(default=False, description="Expand retrieval to include parent sections.")
-    expand_neighbors: int = Field(default=0, ge=0, description="Number of adjacent neighbor chunks (prev/next) to retrieve.")
-    reranker_model: str | None = Field(default=None, description="Cross-encoder model string for reranking stage.")
-    reranker_top_k: int = Field(default=5, gt=0, description="Number of candidates to retain after reranking.")
+    vector_weight: float = Field(
+        default=0.7, ge=0.0, le=1.0, description="Weight for dense vector search."
+    )
+    bm25_weight: float = Field(
+        default=0.3, ge=0.0, le=1.0, description="Weight for BM25 keyword search."
+    )
+    expand_parents: bool = Field(
+        default=False, description="Expand retrieval to include parent sections."
+    )
+    expand_neighbors: int = Field(
+        default=0, ge=0, description="Number of adjacent neighbor chunks (prev/next) to retrieve."
+    )
+    reranker_model: str | None = Field(
+        default=None, description="Cross-encoder model string for reranking stage."
+    )
+    reranker_top_k: int = Field(
+        default=5, gt=0, description="Number of candidates to retain after reranking."
+    )
 
 
 class PipelineConfig(BaseModel):

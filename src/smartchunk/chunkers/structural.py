@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import tiktoken
 
-from smartchunk.models import ChunkerConfig, DocumentSection
 from smartchunk.chunkers.base import BaseChunker
 from smartchunk.chunkers.recursive import RecursiveChunker
+from smartchunk.models import ChunkerConfig, DocumentSection
 
 
 class StructuralChunker(BaseChunker):

@@ -6,7 +6,7 @@ Wraps CrossEncoder or custom rerankers to re-score retrieval candidates.
 from __future__ import annotations
 
 import logging
-from typing import Callable
+from collections.abc import Callable
 
 from smartchunk.models import ScoredChunk
 

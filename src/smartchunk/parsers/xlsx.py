@@ -25,8 +25,7 @@ class XlsxParser(BaseParser):
             import openpyxl  # type: ignore[import-untyped]
         except ImportError as exc:
             raise ImportError(
-                "XLSX parsing requires openpyxl. "
-                "Install with: pip install openpyxl"
+                "XLSX parsing requires openpyxl. Install with: pip install openpyxl"
             ) from exc
 
         wb = openpyxl.load_workbook(str(filepath), data_only=True)
@@ -34,7 +33,7 @@ class XlsxParser(BaseParser):
 
         for sheet_name in wb.sheetnames:
             sheet = wb[sheet_name]
-            
+
             rows_data: list[list[str]] = []
             for row in sheet.iter_rows(values_only=True):
                 # Clean elements to string

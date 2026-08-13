@@ -1,6 +1,5 @@
 """Tests for DocxParser and parser factory detection."""
 
-from pathlib import Path
 from smartchunk.parsers.base import get_parser
 from smartchunk.parsers.docx import DocxParser
 

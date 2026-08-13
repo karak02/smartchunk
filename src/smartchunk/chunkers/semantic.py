@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import tiktoken
 
-from smartchunk.models import ChunkerConfig, DocumentSection
 from smartchunk.chunkers.base import BaseChunker
+from smartchunk.models import ChunkerConfig, DocumentSection
 
 
 class SemanticChunker(BaseChunker):
@@ -34,7 +34,9 @@ class SemanticChunker(BaseChunker):
         """Lazy-load sentence transformer model."""
         if SemanticChunker._model is None:
             try:
-                from sentence_transformers import SentenceTransformer  # type: ignore[import-untyped]
+                from sentence_transformers import (
+                    SentenceTransformer,  # type: ignore[import-untyped]
+                )
             except ImportError as exc:
                 raise ImportError(
                     "Semantic chunking requires sentence-transformers. "
