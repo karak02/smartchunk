@@ -6,9 +6,24 @@ from smartchunk.models import ChunkMetadata, RelationshipType, SmartChunk
 
 def test_sequential_graph_linking():
     chunks = [
-        SmartChunk(text="Chunk 1", metadata=ChunkMetadata(source="doc.txt", chunk_index=0, total_chunks=3, char_count=7, token_count=2)),
-        SmartChunk(text="Chunk 2", metadata=ChunkMetadata(source="doc.txt", chunk_index=1, total_chunks=3, char_count=7, token_count=2)),
-        SmartChunk(text="Chunk 3", metadata=ChunkMetadata(source="doc.txt", chunk_index=2, total_chunks=3, char_count=7, token_count=2)),
+        SmartChunk(
+            text="Chunk 1",
+            metadata=ChunkMetadata(
+                source="doc.txt", chunk_index=0, total_chunks=3, char_count=7, token_count=2
+            ),
+        ),
+        SmartChunk(
+            text="Chunk 2",
+            metadata=ChunkMetadata(
+                source="doc.txt", chunk_index=1, total_chunks=3, char_count=7, token_count=2
+            ),
+        ),
+        SmartChunk(
+            text="Chunk 3",
+            metadata=ChunkMetadata(
+                source="doc.txt", chunk_index=2, total_chunks=3, char_count=7, token_count=2
+            ),
+        ),
     ]
 
     builder = ChunkGraphBuilder()
@@ -38,13 +53,17 @@ def test_section_and_entity_linking():
             text="Revenue increased.",
             parent_context="Financials → Q3",
             entities=["Acme Corp", "2026"],
-            metadata=ChunkMetadata(source="report.md", chunk_index=0, total_chunks=2, char_count=18, token_count=3),
+            metadata=ChunkMetadata(
+                source="report.md", chunk_index=0, total_chunks=2, char_count=18, token_count=3
+            ),
         ),
         SmartChunk(
             text="Expenses were low.",
             parent_context="Financials → Q3",
             entities=["Acme Corp", "USD"],
-            metadata=ChunkMetadata(source="report.md", chunk_index=1, total_chunks=2, char_count=18, token_count=3),
+            metadata=ChunkMetadata(
+                source="report.md", chunk_index=1, total_chunks=2, char_count=18, token_count=3
+            ),
         ),
     ]
 

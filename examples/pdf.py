@@ -1,10 +1,11 @@
-﻿"""SmartChunk PDF Example — extract text, tables, and figures from a PDF.
+"""SmartChunk PDF Example — extract text, tables, and figures from a PDF.
 
 Usage:
     pip install smartchunk[pdf]
     python examples/pdf.py path/to/your.pdf
     python examples/pdf.py path/to/your.pdf --enrich --model gpt-4o-mini
 """
+
 from __future__ import annotations
 
 import sys
@@ -13,6 +14,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from smartchunk import SmartChunker
 
+
 def main(pdf_path: str, enrich: bool = False, model: str = "gpt-4o-mini") -> None:
     print(f"Processing: {pdf_path}")
 
@@ -20,13 +22,13 @@ def main(pdf_path: str, enrich: bool = False, model: str = "gpt-4o-mini") -> Non
         model=model,
         chunk_size=512,
         chunk_overlap=50,
-        strategy="structural",   # structural is best for PDFs with headings
+        strategy="structural",  # structural is best for PDFs with headings
         enrich=enrich,
     )
 
     chunks = chunker.process(pdf_path)
 
-    text_chunks  = [c for c in chunks if c.content_type == "text"]
+    text_chunks = [c for c in chunks if c.content_type == "text"]
     table_chunks = [c for c in chunks if c.content_type == "table"]
     image_chunks = [c for c in chunks if c.content_type in ("figure", "image")]
 
@@ -59,6 +61,7 @@ def main(pdf_path: str, enrich: bool = False, model: str = "gpt-4o-mini") -> Non
 
 if __name__ == "__main__":
     import argparse
+
     p = argparse.ArgumentParser()
     p.add_argument("pdf", help="Path to PDF file")
     p.add_argument("--enrich", action="store_true")

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from smartchunk.chunkers.base import get_chunker
 from smartchunk.chunkers.recursive import RecursiveChunker
 from smartchunk.chunkers.structural import StructuralChunker

@@ -45,11 +45,13 @@ def _extract_tables_from_text(text: str) -> list[dict[str, Any]]:
             if in_table:
                 table_data = _parse_markdown_table(current_table_lines)
                 if table_data:
-                    blocks.append({
-                        "type": "table",
-                        "text": "\n".join(current_table_lines),
-                        "table": table_data
-                    })
+                    blocks.append(
+                        {
+                            "type": "table",
+                            "text": "\n".join(current_table_lines),
+                            "table": table_data,
+                        }
+                    )
                 else:
                     blocks.append({"type": "text", "text": "\n".join(current_table_lines)})
                 current_table_lines = []
@@ -59,11 +61,9 @@ def _extract_tables_from_text(text: str) -> list[dict[str, Any]]:
     if in_table:
         table_data = _parse_markdown_table(current_table_lines)
         if table_data:
-            blocks.append({
-                "type": "table",
-                "text": "\n".join(current_table_lines),
-                "table": table_data
-            })
+            blocks.append(
+                {"type": "table", "text": "\n".join(current_table_lines), "table": table_data}
+            )
         else:
             blocks.append({"type": "text", "text": "\n".join(current_table_lines)})
     elif current_text_lines:
@@ -106,17 +106,19 @@ class PdfParser(BaseParser):
             import pymupdf4llm  # type: ignore[import-untyped]
         except ImportError as exc:
             raise ImportError(
-                "PDF parsing requires pymupdf4llm. "
-                "Install it with: pip install smartchunk[pdf]"
+                "PDF parsing requires pymupdf4llm. Install it with: pip install smartchunk[pdf]"
             ) from exc
 
         # Open doc via PyMuPDF (fitz) for layout/figure extraction
         doc = None
         try:
             import fitz  # type: ignore[import-untyped]
+
             doc = fitz.open(str(filepath))
         except Exception as e:
-            logger.warning("PyMuPDF fitz could not be loaded. Image/figure extraction will be skipped: %s", e)
+            logger.warning(
+                "PyMuPDF fitz could not be loaded. Image/figure extraction will be skipped: %s", e
+            )
 
         # pymupdf4llm returns a list of dicts with 'text' and 'metadata' per page
         pages = pymupdf4llm.to_markdown(
@@ -127,7 +129,9 @@ class PdfParser(BaseParser):
         sections: list[DocumentSection] = []
 
         for page_data in pages:
-            page_text: str = page_data.get("text", "") if isinstance(page_data, dict) else str(page_data)
+            page_text: str = (
+                page_data.get("text", "") if isinstance(page_data, dict) else str(page_data)
+            )
             page_meta: dict = page_data.get("metadata", {}) if isinstance(page_data, dict) else {}
             page_num: int = page_meta.get("page", 0) + 1
 
@@ -144,11 +148,18 @@ class PdfParser(BaseParser):
                                 FigureRef(
                                     caption=f"Image {block[5]} on page {page_num}",
                                     page=page_num,
-                                    bbox=[float(block[0]), float(block[1]), float(block[2]), float(block[3])],
+                                    bbox=[
+                                        float(block[0]),
+                                        float(block[1]),
+                                        float(block[2]),
+                                        float(block[3]),
+                                    ],
                                 )
                             )
                 except Exception as e:
-                    logger.warning("Failed to extract layout blocks from PDF page %d: %s", page_num, e)
+                    logger.warning(
+                        "Failed to extract layout blocks from PDF page %d: %s", page_num, e
+                    )
 
             # Split the page markdown by headings
             page_headings = self._split_page_by_headings(page_text, page_num, filepath.name)

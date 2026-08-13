@@ -5,8 +5,6 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from smartchunk.exporters.json_export import JsonExporter
 from smartchunk.models import SmartChunk
 
@@ -44,7 +42,9 @@ class TestJsonExporter:
         assert dicts[0]["text"] == "The board approved a $50M expansion plan."
         assert dicts[0]["metadata"]["source"] == "test.pdf"
 
-    def test_to_json_creates_parent_dirs(self, tmp_path: Path, sample_smart_chunks: list[SmartChunk]):
+    def test_to_json_creates_parent_dirs(
+        self, tmp_path: Path, sample_smart_chunks: list[SmartChunk]
+    ):
         filepath = tmp_path / "nested" / "deep" / "output.json"
         JsonExporter.to_json(sample_smart_chunks, filepath)
         assert filepath.exists()

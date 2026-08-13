@@ -8,6 +8,7 @@ Requires the ``docx`` extra::
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from smartchunk.models import DocumentSection, TableData
 from smartchunk.parsers.base import BaseParser
@@ -28,8 +29,7 @@ class DocxParser(BaseParser):
             import docx  # type: ignore[import-untyped]
         except ImportError as exc:
             raise ImportError(
-                "DOCX parsing requires python-docx. "
-                "Install with: pip install smartchunk[docx]"
+                "DOCX parsing requires python-docx. Install with: pip install smartchunk[docx]"
             ) from exc
 
         doc = docx.Document(str(filepath))

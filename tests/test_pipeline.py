@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from smartchunk import SmartChunker, SmartChunk, PipelineConfig
+from smartchunk import PipelineConfig, SmartChunk, SmartChunker
 
 
 class TestSmartChunkerInit:
@@ -127,7 +127,9 @@ class TestSmartChunkerWithEnrichment:
     """Tests with mocked LLM enrichment."""
 
     @patch("smartchunk.enrichment.llm.acompletion")
-    def test_full_pipeline_with_enrichment(self, mock_acompletion: AsyncMock, tmp_path: Path, sample_text: str):
+    def test_full_pipeline_with_enrichment(
+        self, mock_acompletion: AsyncMock, tmp_path: Path, sample_text: str
+    ):
         mock_data = {
             "summary": "Test summary",
             "entities": ["Entity1"],

@@ -1,5 +1,4 @@
-"""JSON parser — extracts structured text from JSON files.
-"""
+"""JSON parser — extracts structured text from JSON files."""
 
 from __future__ import annotations
 
@@ -18,7 +17,7 @@ class JsonParser(BaseParser):
     def parse(self, filepath: str | Path) -> list[DocumentSection]:
         filepath = Path(filepath)
 
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
 
         # Prettify the JSON

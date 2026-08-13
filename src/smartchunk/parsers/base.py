@@ -131,5 +131,6 @@ def get_parser(filepath: str | Path) -> BaseParser:
 
     raise ValueError(
         f"No parser registered for extension '{ext}'. "
-        f"Supported: .txt, .text, .log, .md, .markdown, .mdx, .pdf, .docx, .html, .htm, .csv, .json, .xml, .epub, .pptx, .xlsx"
+        "Supported: .txt, .text, .log, .md, .markdown, .mdx, .pdf, .docx, "
+        ".html, .htm, .csv, .json, .xml, .epub, .pptx, .xlsx"
     )

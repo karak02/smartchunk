@@ -1,5 +1,4 @@
-"""CSV parser — extracts structured sections and tables from CSV files.
-"""
+"""CSV parser — extracts structured sections and tables from CSV files."""
 
 from __future__ import annotations
 
@@ -21,7 +20,7 @@ class CsvParser(BaseParser):
     def parse(self, filepath: str | Path) -> list[DocumentSection]:
         filepath = Path(filepath)
 
-        with open(filepath, "r", encoding="utf-8-sig", newline="") as f:
+        with open(filepath, encoding="utf-8-sig", newline="") as f:
             reader = csv.reader(f)
             rows = list(reader)
 
@@ -29,7 +28,9 @@ class CsvParser(BaseParser):
             return []
 
         headers = [h.strip() for h in rows[0]]
-        data_rows = [[cell.strip() for cell in r] for r in rows[1:] if any(cell.strip() for cell in r)]
+        data_rows = [
+            [cell.strip() for cell in r] for r in rows[1:] if any(cell.strip() for cell in r)
+        ]
 
         table_data = TableData(headers=headers, rows=data_rows, caption=filepath.name)
 

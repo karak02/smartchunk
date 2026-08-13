@@ -148,7 +148,12 @@ class SmartChunker:
         """Cumulative LLM usage stats (tokens, estimated cost)."""
         if self._enricher:
             return self._enricher.usage_stats
-        return {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0, "estimated_cost_usd": 0.0}
+        return {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0,
+            "estimated_cost_usd": 0.0,
+        }
 
     @property
     def cache_stats(self) -> dict[str, Any]:
@@ -314,7 +319,9 @@ class SmartChunker:
             collection_name=collection,
             persist_directory=persist_directory,
         )
-        exporter.to_chromadb(chunks, collection_name=collection, persist_directory=persist_directory)
+        exporter.to_chromadb(
+            chunks, collection_name=collection, persist_directory=persist_directory
+        )
 
     # ── Internal ───────────────────────────────────────────────────────────────
 

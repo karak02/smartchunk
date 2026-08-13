@@ -11,19 +11,25 @@ def test_bm25_retrieval():
             text="The board approved a $50M capital expansion in Q3.",
             keywords=["capital", "expansion"],
             entities=["$50M"],
-            metadata=ChunkMetadata(source="report.txt", chunk_index=0, total_chunks=3, char_count=50, token_count=10),
+            metadata=ChunkMetadata(
+                source="report.txt", chunk_index=0, total_chunks=3, char_count=50, token_count=10
+            ),
         ),
         SmartChunk(
             text="Marketing team launched a new brand campaign in summer.",
             keywords=["marketing", "brand"],
             entities=["Marketing"],
-            metadata=ChunkMetadata(source="report.txt", chunk_index=1, total_chunks=3, char_count=50, token_count=10),
+            metadata=ChunkMetadata(
+                source="report.txt", chunk_index=1, total_chunks=3, char_count=50, token_count=10
+            ),
         ),
         SmartChunk(
             text="Finance and HR operations are standard.",
             keywords=["finance", "operations"],
             entities=[],
-            metadata=ChunkMetadata(source="report.txt", chunk_index=2, total_chunks=3, char_count=40, token_count=8),
+            metadata=ChunkMetadata(
+                source="report.txt", chunk_index=2, total_chunks=3, char_count=40, token_count=8
+            ),
         ),
     ]
 
@@ -40,17 +46,23 @@ def test_hybrid_retriever_and_expansion():
         SmartChunk(
             text="Annual Report 2026 Overview.",
             parent_context="Financials → Executive Summary",
-            metadata=ChunkMetadata(source="report.txt", chunk_index=0, total_chunks=3, char_count=28, token_count=5),
+            metadata=ChunkMetadata(
+                source="report.txt", chunk_index=0, total_chunks=3, char_count=28, token_count=5
+            ),
         ),
         SmartChunk(
             text="The board approved $50M expansion.",
             parent_context="Financials → Executive Summary",
-            metadata=ChunkMetadata(source="report.txt", chunk_index=1, total_chunks=3, char_count=34, token_count=6),
+            metadata=ChunkMetadata(
+                source="report.txt", chunk_index=1, total_chunks=3, char_count=34, token_count=6
+            ),
         ),
         SmartChunk(
             text="Risk mitigation plans were reviewed.",
             parent_context="Financials → Risk Analysis",
-            metadata=ChunkMetadata(source="report.txt", chunk_index=2, total_chunks=3, char_count=36, token_count=6),
+            metadata=ChunkMetadata(
+                source="report.txt", chunk_index=2, total_chunks=3, char_count=36, token_count=6
+            ),
         ),
     ]
 
@@ -58,7 +70,9 @@ def test_hybrid_retriever_and_expansion():
     builder = ChunkGraphBuilder()
     builder.build(chunks)
 
-    config = RetrievalConfig(vector_weight=0.5, bm25_weight=0.5, expand_parents=True, expand_neighbors=1)
+    config = RetrievalConfig(
+        vector_weight=0.5, bm25_weight=0.5, expand_parents=True, expand_neighbors=1
+    )
     retriever = HybridRetriever(chunks, config=config)
 
     # Search for $50M
@@ -76,11 +90,15 @@ def test_custom_reranker():
     chunks = [
         SmartChunk(
             text="Relevant text about AI expansion.",
-            metadata=ChunkMetadata(source="doc.txt", chunk_index=0, total_chunks=2, char_count=33, token_count=6),
+            metadata=ChunkMetadata(
+                source="doc.txt", chunk_index=0, total_chunks=2, char_count=33, token_count=6
+            ),
         ),
         SmartChunk(
             text="Irrelevant text about gardening.",
-            metadata=ChunkMetadata(source="doc.txt", chunk_index=1, total_chunks=2, char_count=32, token_count=6),
+            metadata=ChunkMetadata(
+                source="doc.txt", chunk_index=1, total_chunks=2, char_count=32, token_count=6
+            ),
         ),
     ]
 

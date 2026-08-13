@@ -30,7 +30,10 @@ class BM25Index:
 
         for chunk in chunks:
             # Build search document from text + enriched fields
-            search_doc = f"{chunk.text} {' '.join(chunk.keywords)} {' '.join(chunk.entities)} {chunk.summary} {chunk.parent_context}"
+            search_doc = (
+                f"{chunk.text} {' '.join(chunk.keywords)} {' '.join(chunk.entities)} "
+                f"{chunk.summary} {chunk.parent_context}"
+            )
             tokens = tokenize(search_doc)
             self.doc_tokens.append(tokens)
             self.doc_len.append(len(tokens))

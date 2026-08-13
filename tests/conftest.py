@@ -9,7 +9,6 @@ from smartchunk.models import (
     ChunkMetadata,
     ChunkStrategy,
     DocumentSection,
-    EnrichmentConfig,
     PipelineConfig,
     SmartChunk,
 )
@@ -171,13 +170,14 @@ def mock_llm_cache(tmp_path, monkeypatch):
     """Bypass persistent cache for all tests to prevent test pollution."""
     temp_cache_file = tmp_path / ".smartchunk_cache.json"
     from smartchunk.enrichment.llm import LLMEnricher
+
     original_init = LLMEnricher.__init__
-    
+
     def patched_init(self, *args, **kwargs):
         original_init(self, *args, **kwargs)
         self._cache_file = str(temp_cache_file)
         self._cache = {}
         self._cache_hits = 0
         self._cache_misses = 0
-        
+
     monkeypatch.setattr(LLMEnricher, "__init__", patched_init)

@@ -1,12 +1,11 @@
-"""EPUB parser — extracts structured sections and text from EPUB ebooks.
-"""
+"""EPUB parser — extracts structured sections and text from EPUB ebooks."""
 
 from __future__ import annotations
 
 import re
 import zipfile
-from pathlib import Path
 from html.parser import HTMLParser
+from pathlib import Path
 
 from smartchunk.models import DocumentSection
 from smartchunk.parsers.base import BaseParser
@@ -41,7 +40,8 @@ class EpubParser(BaseParser):
         with zipfile.ZipFile(filepath, "r") as zip_ref:
             # Find all HTML/XHTML content documents
             html_files = [
-                name for name in zip_ref.namelist()
+                name
+                for name in zip_ref.namelist()
                 if re.search(r"\.(html|xhtml|htm)$", name, re.IGNORECASE)
             ]
             # Sort files to try to preserve reading order
