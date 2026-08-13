@@ -1,0 +1,25 @@
+The board of directors met on March 15, 2026 to discuss the annual budget and strategic direction for the upcoming fiscal year. CEO Sarah Chen opened the meeting with a comprehensive presentation on the company's growth strategy for the APAC region, highlighting a projected revenue increase of 23% year-over-year.
+
+Financial Strategy and Capital Allocation
+
+The board approved a $50M expansion plan targeting Southeast Asian markets. This capital expenditure will be funded through a combination of retained earnings and a new credit facility arranged by Goldman Sachs. The expansion includes opening new offices in Singapore, Jakarta, and Ho Chi Minh City, with an expected operational launch in Q3 2026.
+
+CFO Michael Torres provided a detailed breakdown of the funding structure. Approximately $30M will come from operating cash flow, while the remaining $20M will be secured through a revolving credit facility at SOFR plus 175 basis points. The total debt-to-equity ratio is expected to remain below 0.4x, well within the board's comfort range.
+
+Revenue Projections and Market Analysis
+
+The company projects $215M in total revenue for FY2026, up from $175M in FY2025. The APAC expansion is expected to contribute approximately $40M in incremental revenue by FY2027. Key growth drivers include the digital transformation services line, which has seen 45% year-over-year growth, and the new AI consulting practice launched in January 2026.
+
+Market analysis conducted by the strategy team indicates that the Southeast Asian IT services market is growing at 18% CAGR, with particular strength in Indonesia and Vietnam. Competitive positioning shows GreenTech Corp as the third-largest player in the sustainable technology consulting space.
+
+Risk Factors and Mitigation
+
+CFO Michael Torres outlined the risk factors associated with the expansion. Currency fluctuation in emerging markets remains the primary concern, with potential impact on Q3 and Q4 2026 earnings. The company has hedged approximately 60% of its projected foreign exchange exposure through forward contracts maturing in December 2026.
+
+Additional risk factors include regulatory uncertainty in Vietnam, where new data localisation requirements may increase infrastructure costs by 15-20%. The risk committee has developed contingency plans including alternative cloud deployment strategies and partnerships with local data centre operators.
+
+ESG Initiatives and Sustainability
+
+The meeting concluded with a vote on the new ESG policy framework. All board members voted in favour, making GreenTech Corp one of the first in the industry to adopt comprehensive sustainability targets. Key commitments include achieving net-zero Scope 1 and 2 emissions by 2030, sourcing 100% renewable energy for all offices by 2028, and implementing a supply chain sustainability audit programme.
+
+The ESG committee, chaired by Director Angela Martinez, will oversee implementation and provide quarterly progress reports to the board. An initial budget of $5M has been allocated for sustainability infrastructure upgrades in FY2026.

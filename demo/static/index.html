@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ SmartChunk Developer Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Ambient Background Lighting -->
+    <div class="ambient-glow">
+        <div class="sphere sphere-1"></div>
+        <div class="sphere sphere-2"></div>
+        <div class="sphere sphere-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="brand">
+                <span class="logo-icon">⚡</span>
+                <div class="brand-text">
+                    <h1>SmartChunk</h1>
+                    <p>Self-describing document chunks for production RAG</p>
+                </div>
+            </div>
+            <div class="header-status">
+                <div class="status-badge" id="status-backend">
+                    <span class="indicator green"></span>
+                    <span class="label">API Connected</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Sidebar / Configurations -->
+            <aside class="sidebar-container">
+                <form id="config-form">
+                    <!-- Main Config Card -->
+                    <div class="sidebar card glass">
+                        <h2 class="section-title">Configuration</h2>
+                        
+                        <!-- strategy -->
+                        <div class="form-group">
+                            <label for="strategy">Chunking Strategy</label>
+                            <select id="strategy" name="strategy">
+                                <option value="recursive" selected>Recursive (Default)</option>
+                                <option value="semantic">Semantic (Topic-aware)</option>
+                                <option value="structural">Structural (Heading-aware)</option>
+                            </select>
+                            <span class="help-text" id="strategy-help">Splits on paragraph, line, and sentence delimiters recursively.</span>
+                        </div>
+
+                        <!-- chunk size -->
+                        <div class="form-group">
+                            <div class="range-header">
+                                <label for="chunk_size">Chunk Size</label>
+                                <span class="range-value" id="size-val">512</span>
+                            </div>
+                            <input type="range" id="chunk_size" name="chunk_size" min="64" max="2048" step="32" value="512">
+                            <span class="help-text">Target tokens per chunk (using cl100k_base encoder).</span>
+                        </div>
+
+                        <!-- chunk overlap -->
+                        <div class="form-group">
+                            <div class="range-header">
+                                <label for="chunk_overlap">Overlap Size</label>
+                                <span class="range-value" id="overlap-val">50</span>
+                            </div>
+                            <input type="range" id="chunk_overlap" name="chunk_overlap" min="0" max="500" step="10" value="50">
+                            <span class="help-text">Overlap between consecutive chunks in tokens.</span>
+                        </div>
+
+                        <!-- LLM details -->
+                        <div id="enrichment-details" class="transition-container expanded">
+                            <!-- model name -->
+                            <div class="form-group">
+                                <label for="model">LLM Model</label>
+                                <input type="text" id="model" name="model" value="gpt-4o-mini" placeholder="e.g. gpt-4o-mini or ollama/llama3">
+                                <div class="quick-presets">
+                                    <button type="button" class="preset-tag active" data-model="gpt-4o-mini">gpt-4o-mini</button>
+                                    <button type="button" class="preset-tag" data-model="gpt-4o">gpt-4o</button>
+                                    <button type="button" class="preset-tag" data-model="ollama/qwen2.5-coder:1.5b">Ollama (Qwen 1.5B)</button>
+                                </div>
+                            </div>
+
+                            <!-- enrichment fields -->
+                            <div class="form-group">
+                                <label>Enrichment Fields</label>
+                                <div class="checkbox-grid">
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" name="enrich_fields" value="summary" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Summary</span>
+                                    </label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" name="enrich_fields" value="entities" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Entities</span>
+                                    </label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" name="enrich_fields" value="keywords" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Keywords</span>
+                                    </label>
+                                    <label class="checkbox-container">
+                                        <input type="checkbox" name="enrich_fields" value="confidence" checked>
+                                        <span class="checkmark"></span>
+                                        <span>Confidence</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- temperature -->
+                            <div class="form-group">
+                                <div class="range-header">
+                                    <label for="temperature">Temperature</label>
+                                    <span class="range-value" id="temp-val">0.0</span>
+                                </div>
+                                <input type="range" id="temperature" name="temperature" min="0.0" max="1.0" step="0.1" value="0.0">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn primary-btn glow-btn" id="submit-btn">
+                            <span>Chunk & Enrich Document</span>
+                        </button>
+                    </div>
+
+                    <!-- Green Gradient Card (Ollama Connection & LLM Toggle) -->
+                    <div class="card status-card green-gradient-card">
+                        <div class="card-glow"></div>
+                        <div class="card-content">
+                            <div class="status-header">
+                                <div class="status-indicator">
+                                    <span class="indicator-dot gray" id="ollama-indicator"></span>
+                                    <span class="status-label" id="ollama-label">Checking Ollama...</span>
+                                </div>
+                                <h3>Ollama Local Engine</h3>
+                            </div>
+                            
+                            <div class="toggle-container">
+                                <label class="switch-container">
+                                    <input type="checkbox" id="enrich" name="enrich" checked>
+                                    <span class="switch-slider"></span>
+                                    <span class="switch-label font-bold">LLM Enrichment</span>
+                                </label>
+                                <span class="help-text">Enable LLM call to extract summaries, entities, keywords.</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </aside>
+
+            <!-- Dashboard Content -->
+            <section class="content-panel">
+                <!-- Input Panel -->
+                <div class="input-container card glass">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" data-tab="text-tab">Raw Text Input</button>
+                        <button class="tab-btn" data-tab="file-tab">Document File Upload</button>
+                        <button class="tab-btn" data-tab="cost-tab">💰 Cost Optimization</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="text-tab">
+                        <textarea id="raw-text" placeholder="Paste your document content here (reports, articles, technical manuals, etc.)..."></textarea>
+                        <div class="textarea-actions">
+                            <button type="button" class="btn secondary-btn" id="load-sample-btn">Load Sample Text</button>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="file-tab">
+                        <div class="file-dropzone" id="dropzone">
+                            <input type="file" id="file-input" accept=".txt,.text,.log,.md,.markdown,.mdx,.pdf,.docx,.html,.htm,.csv,.json,.epub,.xml,.pptx,.xlsx">
+                            <div class="dropzone-prompt">
+                                <span class="upload-icon">📁</span>
+                                <h3>Drag & Drop your file here</h3>
+                                <p>Supports PDF, DOCX, PPTX, XLSX, HTML, CSV, JSON, Markdown, TXT, EPUB, XML, and LOG documents</p>
+                                <button type="button" class="btn secondary-btn select-file-btn">Browse Files</button>
+                            </div>
+                            <div class="dropzone-file-info" style="display: none;">
+                                <span class="file-icon">📄</span>
+                                <span class="file-name" id="file-name-label">document.pdf</span>
+                                <button type="button" class="remove-file-btn" id="remove-file">×</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="cost-tab">
+                        <div class="cost-optimization-info">
+                            <div class="cost-hero">
+                                <span class="cost-hero-icon">⚡</span>
+                                <div>
+                                    <h3>Hash-Based LLM Cache</h3>
+                                    <p>SmartChunk automatically hashes each chunk's text and caches enrichment results. Duplicate or re-processed chunks skip the LLM entirely, saving time and cost.</p>
+                                </div>
+                            </div>
+                            <div class="cost-flow-diagram">
+                                <div class="flow-step">
+                                    <span class="flow-icon">📄</span>
+                                    <span class="flow-label">Chunk Text</span>
+                                </div>
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-step">
+                                    <span class="flow-icon">🔑</span>
+                                    <span class="flow-label">SHA-256 Hash</span>
+                                </div>
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-step">
+                                    <span class="flow-icon">💾</span>
+                                    <span class="flow-label">Cache Lookup</span>
+                                </div>
+                                <span class="flow-arrow">→</span>
+                                <div class="flow-step flow-branch">
+                                    <div class="branch-hit"><span class="flow-icon">✅</span> <span>HIT → Reuse</span></div>
+                                    <div class="branch-miss"><span class="flow-icon">🤖</span> <span>MISS → LLM Call</span></div>
+                                </div>
+                            </div>
+                            <p class="cost-note">Process a document to see live cache stats below. Re-processing the same text will demonstrate cache hits.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Loading State -->
+                <div class="loading-state card glass" id="loading-overlay" style="display: none;">
+                    <div class="spinner-container">
+                        <div class="glow-spinner"></div>
+                        <span class="logo-icon pulsing">⚡</span>
+                    </div>
+                    <h2>Processing Document Pipeline</h2>
+                    <p id="loading-step">Running parses and chunking text...</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-fill" style="width: 10%;"></div>
+                    </div>
+                    <div class="status-console" id="status-console">
+                        <div class="console-line">[INFO] Starting document processing...</div>
+                    </div>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="results-container" id="results-panel" style="display: none;">
+                    <!-- Stats Overview -->
+                    <div class="stats-overview">
+                        <div class="stat-card card glass">
+                            <span class="stat-title">Total Chunks</span>
+                            <span class="stat-value" id="stat-chunks">-</span>
+                        </div>
+                        <div class="stat-card card glass">
+                            <span class="stat-title">Execution Time</span>
+                            <span class="stat-value" id="stat-time">-</span>
+                        </div>
+                        <div class="stat-card card glass">
+                            <span class="stat-title">Tokens Consumed</span>
+                            <span class="stat-value" id="stat-tokens">-</span>
+                        </div>
+                        <div class="stat-card card glass">
+                            <span class="stat-title">Est. Cost (USD)</span>
+                            <span class="stat-value" id="stat-cost">-</span>
+                        </div>
+                    </div>
+
+                    <!-- Cost Optimization Stats -->
+                    <div class="cache-stats-panel card glass" id="cache-stats-panel">
+                        <div class="cache-stats-header">
+                            <h3>💰 Cost Optimization Report</h3>
+                            <span class="subtitle">Hash-based caching performance for this processing run</span>
+                        </div>
+                        <div class="cache-stats-grid">
+                            <div class="cache-stat-box hit">
+                                <span class="cache-stat-icon">✅</span>
+                                <span class="cache-stat-value" id="cache-hits">0</span>
+                                <span class="cache-stat-label">Cache Hits</span>
+                            </div>
+                            <div class="cache-stat-box miss">
+                                <span class="cache-stat-icon">🤖</span>
+                                <span class="cache-stat-value" id="cache-misses">0</span>
+                                <span class="cache-stat-label">LLM Calls Made</span>
+                            </div>
+                            <div class="cache-stat-box rate">
+                                <span class="cache-stat-icon">📊</span>
+                                <span class="cache-stat-value" id="cache-hit-rate">0%</span>
+                                <span class="cache-stat-label">Hit Rate</span>
+                            </div>
+                            <div class="cache-stat-box saved">
+                                <span class="cache-stat-icon">⏱️</span>
+                                <span class="cache-stat-value" id="cache-time-saved">0s</span>
+                                <span class="cache-stat-label">Time Saved</span>
+                            </div>
+                            <div class="cache-stat-box entries">
+                                <span class="cache-stat-icon">💾</span>
+                                <span class="cache-stat-value" id="cache-entries">0</span>
+                                <span class="cache-stat-label">Cached Entries</span>
+                            </div>
+                            <div class="cache-stat-box calls-saved">
+                                <span class="cache-stat-icon">🚀</span>
+                                <span class="cache-stat-value" id="cache-calls-saved">0</span>
+                                <span class="cache-stat-label">LLM Calls Saved</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Toolbar -->
+                    <div class="results-toolbar card glass">
+                        <div class="toolbar-title">
+                            <h3 id="results-title">Generated SmartChunks</h3>
+                            <span class="subtitle" id="results-subtitle">Enriched self-describing vector DB payloads</span>
+                        </div>
+                        <div class="toolbar-actions">
+                            <button class="btn secondary-btn" id="copy-json-btn">📋 Copy JSON</button>
+                            <button class="btn secondary-btn" id="download-json-btn">⬇️ Download JSON</button>
+                            <button class="btn secondary-btn" id="view-raw-btn">🔍 View Raw Output</button>
+                        </div>
+                    </div>
+
+                    <!-- Chunks List -->
+                    <div class="chunks-list" id="chunks-list">
+                        <!-- Dynamic Chunk Cards will be inserted here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Raw Output Modal -->
+    <div class="modal-overlay" id="raw-modal" style="display: none;">
+        <div class="modal card glass">
+            <div class="modal-header">
+                <h3>Raw SmartChunks Output JSON</h3>
+                <button class="close-modal-btn" id="close-modal">×</button>
+            </div>
+            <div class="modal-body">
+                <pre><code class="json-code" id="raw-json-output"></code></pre>
+            </div>
+            <div class="modal-footer">
+                <button class="btn secondary-btn" id="modal-copy-btn">📋 Copy to Clipboard</button>
+                <button class="btn primary-btn" id="modal-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
