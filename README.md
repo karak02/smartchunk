@@ -65,7 +65,7 @@ When a user or AI agent queries:
 1. **Context Fragmentation**: The subject ("APAC territory") is in Chunk #14, but the action and amount ("$50M expansion budget", "Sarah Mitchell") is in Chunk #15.
 2. **Missing Hierarchy**: Neither chunk knows it belongs to *"Acme Corp → Q3 2026 Financial Strategy → Capital Allocation"*.
 3. **Lexical Retrieval Failure**: If the query asks for *"APAC expenditure"*, standard dense vectors or BM25 miss Chunk #15 entirely because the word "APAC" is absent.
-4. **Table & Figure Destruction**: Tabular spreadsheets and PDF figures get shredded into unparseable raw string fragments, destroying column relationships.
+4. **Table & Figure Destruction**: Tabular spreadsheets and PDF figures get shredded into unparseable raw string fragments, destroying column relationships
 
 ---
 
